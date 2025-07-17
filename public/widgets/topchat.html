@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <title>Top czatu – Sekretarniuss</title>
+    <style>
+        body {
+            margin: 0;
+            background: transparent;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box {
+            width: 50%;
+            height: 50vh;
+            padding: 2vh 2vw;
+            border-radius: 24px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow:
+                    0 4px 16px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeInBox 0.6s ease-out both;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin: 0 0 1vh;
+            font-size: clamp(1.2rem, 3vh, 2rem);
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1vh 2vw;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        #list {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2vh;
+        }
+
+        .entry {
+            flex: 1;
+            font-size: calc(0.9rem + 2vh);
+            animation: rowFade 0.4s ease-out both;
+            padding: calc(0.3vh + 0.2rem) calc(1vw + 0.5rem);
+            border-radius: calc(8px + 0.5vh);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 0;
+        }
+
+        .entry:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .entry-rank {
+            font-weight: 700;
+            margin-right: 1vw;
+            min-width: 5vw;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            font-size: calc(0.7rem + 1.5vh);
+        }
+
+        .entry-user {
+            flex-grow: 1;
+            text-align: left;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            font-size: calc(0.7rem + 1.4vh);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .entry-points {
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.5);
+            padding: calc(0.2vh + 0.1rem) calc(0.5vw + 0.3rem);
+            border-radius: 8px;
+            font-size: calc(0.6rem + 1.3vh);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+        }
+
+        .gold {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: gold;
+        }
+
+        .gold .entry-rank {
+            color: gold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+            font-size: calc(0.8rem + 1.7vh);
+        }
+
+        .gold .entry-points {
+            background: rgba(255, 215, 0, 0.3);
+            color: gold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .gold .entry-user {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .silver {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.3) 0%, rgba(192, 192, 192, 0.1) 100%);
+            border: 1px solid rgba(192, 192, 192, 0.3);
+            color: silver;
+        }
+
+        .silver .entry-rank {
+            color: silver;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+            font-size: calc(0.75rem + 1.6vh);
+        }
+
+        .silver .entry-points {
+            background: rgba(192, 192, 192, 0.3);
+            color: silver;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .silver .entry-user {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .bronze {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.3) 0%, rgba(205, 127, 50, 0.1) 100%);
+            border: 1px solid rgba(205, 127, 50, 0.3);
+            color: #cd7f32;
+        }
+
+        .bronze .entry-rank {
+            color: #cd7f32;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+            font-size: calc(0.7rem + 1.5vh);
+        }
+
+        .bronze .entry-points {
+            background: rgba(205, 127, 50, 0.3);
+            color: #cd7f32;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .bronze .entry-user {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .progress-bar {
+            height: 0.5vh;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 1vh 0;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .no-data {
+            padding: 3vh;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            font-size: clamp(1rem, 2.5vh, 1.3rem);
+        }
+
+        @keyframes rowFade {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInBox {
+            from { opacity: 0; transform: scale(0.95); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        .medal {
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2 id="title">Ładowanie…</h2>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+    <div id="list">–</div>
+</div>
+
+<script>
+    const titleBox = document.getElementById('title');
+    const listBox  = document.getElementById('list');
+    const progressBar = document.getElementById('progress');
+
+    let CONFIG = null;
+    let DATA   = { global: [], month: [], day: [] };
+    let stepIdx = 0, timerId = null, progressTimer = null;
+    let stepStartTime = 0;
+
+    const fetchJSON = (u) => fetch(u).then(r => {
+        if (!r.ok) throw Error(r.status);
+        return r.json();
+    });
+
+    const sliceRange = (a, [s, e]) => a.slice(s, e);
+    const MONTH_LOC = ['styczniu','lutym','marcu','kwietniu','maju','czerwcu','lipcu','sierpniu','wrześniu','październiku','listopadzie','grudniu'];
+
+    function formatTitle(tpl, loc) {
+        const n = new Date();
+        return tpl.replace('{date}', n.toLocaleDateString(loc))
+            .replace('{month}', n.toLocaleString(loc, { month: 'long', year: 'numeric' }))
+            .replace('{monthLoc}', MONTH_LOC[n.getMonth()]);
+    }
+
+    function cssClass(scope, rangeStart, i) {
+        if (i > 2) return '';
+        if (scope === 'global' && rangeStart !== 0) return '';
+        return i === 0 ? 'gold' : i === 1 ? 'silver' : 'bronze';
+    }
+
+    function getMedalEmoji(i, rangeStart) {
+        // Pokaż emotki tylko dla rzeczywistych pierwszych 3 miejsc globalnie
+        if (rangeStart !== 0) return '';
+        return i === 0 ? '🏆' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+    }
+
+    function formatPoints(points) {
+        if (points >= 1000000) {
+            return (points / 1000000).toFixed(1) + 'M';
+        } else if (points >= 1000) {
+            return (points / 1000).toFixed(1) + 'k';
+        }
+        return points.toString();
+    }
+
+    function updateProgress() {
+        if (!CONFIG) return;
+
+        const step = CONFIG.steps[stepIdx];
+        const elapsed = Date.now() - stepStartTime;
+        const progress = Math.min((elapsed / step.duration) * 100, 100);
+
+        progressBar.style.width = progress + '%';
+
+        if (progress < 100) {
+            progressTimer = setTimeout(updateProgress, 100);
+        }
+    }
+
+    function renderStep() {
+        if (!CONFIG) {
+            titleBox.textContent = 'Brak konfiguracji';
+            return;
+        }
+
+        // Znajdź pierwszy krok z danymi
+        let foundStep = null;
+        let originalStepIdx = stepIdx;
+
+        for (let i = 0; i < CONFIG.steps.length; i++) {
+            const currentStep = CONFIG.steps[stepIdx];
+            const { scope, range } = currentStep;
+            const rows = sliceRange(DATA[scope], range);
+
+            if (rows.length > 0) {
+                foundStep = currentStep;
+                break;
+            }
+
+            // Przejdź do następnego kroku
+            stepIdx = (stepIdx + 1) % CONFIG.steps.length;
+
+            // Jeśli wróciliśmy do punktu startowego, znaczy że wszystkie są puste
+            if (stepIdx === originalStepIdx) {
+                break;
+            }
+        }
+
+        if (!foundStep) {
+            titleBox.textContent = 'Brak danych we wszystkich kategoriach';
+            listBox.innerHTML = '';
+
+            // Spróbuj ponownie za standardowy czas
+            clearTimeout(timerId);
+            timerId = setTimeout(nextStep, 5000);
+            return;
+        }
+
+        const { scope, range } = foundStep;
+        const rows = sliceRange(DATA[scope], range);
+
+        titleBox.textContent = formatTitle(foundStep.title, CONFIG.locale);
+
+        listBox.innerHTML = rows.map((e, i) => {
+            const cssClasses = cssClass(scope, range[0], i);
+            const medal = getMedalEmoji(i, range[0]);
+            const rank = range[0] + i + 1;
+
+            return `
+                <div class="entry ${cssClasses}" style="animation-delay: ${i * 0.1}s">
+                    <div class="entry-rank">
+                        ${medal} #${rank}
+                    </div>
+                    <div class="entry-user">${e.user}</div>
+                    <div class="entry-points">${formatPoints(e.points)} pkt</div>
+                </div>
+            `;
+        }).join('');
+
+        // Reset progress bar
+        clearTimeout(progressTimer);
+        stepStartTime = Date.now();
+        progressBar.style.width = '0%';
+        updateProgress();
+
+        clearTimeout(timerId);
+        timerId = setTimeout(nextStep, foundStep.duration);
+    }
+
+    function nextStep() {
+        stepIdx = (stepIdx + 1) % CONFIG.steps.length;
+        renderStep();
+    }
+
+    async function loadData(scope) {
+        try {
+            const { top } = await fetchJSON(`/api/topchat?scope=${scope}&all=true`);
+            DATA[scope] = top;
+        } catch (error) {
+            console.error(`Błąd ładowania danych dla ${scope}:`, error);
+        }
+    }
+
+    async function refreshAll() {
+        titleBox.classList.add('loading');
+        await Promise.all(['global', 'month', 'day'].map(loadData));
+        titleBox.classList.remove('loading');
+    }
+
+    async function bootstrap() {
+        try {
+            CONFIG = await fetchJSON('/widgets/topchat-config.json');
+            await refreshAll();
+            renderStep();
+            setInterval(async () => {
+                try {
+                    CONFIG = await fetchJSON('/widgets/topchat-config.json');
+                } catch (error) {
+                    console.error('Błąd ładowania konfiguracji:', error);
+                }
+                refreshAll();
+            }, (CONFIG.refreshInterval || 60) * 1000);
+        } catch (e) {
+            titleBox.textContent = '❌ Błąd widżetu';
+            console.error('Błąd inicjalizacji:', e);
+        }
+    }
+
+    bootstrap();
+</script>
+</body>
+</html>

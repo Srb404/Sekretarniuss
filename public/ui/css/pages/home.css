@@ -1,0 +1,11 @@
+.container.home{
+    text-align:center;
+    padding:90px 24px;
+}
+.home-buttons{
+    margin-top:52px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:30px;
+}

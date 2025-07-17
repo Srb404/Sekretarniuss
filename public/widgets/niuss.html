@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <title>Niuss Widget</title>
+    <style>
+        body{margin:0;overflow:hidden;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+        #niuss-box{
+            position:absolute;top:0;left:50%;transform:translate(-50%,-100%);
+            /* tło celowo przeźroczyste – jeśli chcesz lekki panel, odkomentuj: */
+            /* background:rgba(0,0,0,.85); */
+            color:#fff;padding:20px 40px;border-radius:16px;
+            font-size:1.6rem;text-align:center;min-width:400px;
+            transition:transform .6s ease,opacity .4s ease;
+            opacity:0;pointer-events:none;
+        }
+        #niuss-box.show{transform:translate(-50%,50px);opacity:1}
+        #niuss-box.hide{
+            animation:fadeOut 0.8s cubic-bezier(.55,.085,.68,.53) forwards;
+        }
+        .combo{
+            font-weight:bold;font-size:1.8rem;margin-top:14px;display:block;
+            color:#ffe100;text-shadow:2px 2px 8px rgba(0,0,0,.8);
+            filter:drop-shadow(0 0 10px rgba(255,225,0,.4));
+        }
+        .combo.combo-rainbow{
+            background:linear-gradient(90deg,#ff0066,#ff6600,#ffcc00,#00ff66,#0066ff,#6600ff,#ff0066);
+            background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            animation:wave 3s linear infinite;
+            filter:drop-shadow(0 0 15px rgba(255,255,255,.6));
+        }
+        @keyframes wave{0%{background-position:0%}100%{background-position:400%}}
+
+        /* Ładna animacja znikania */
+        @keyframes fadeOut{
+            0%{
+                transform:translate(-50%,50px) scale(1);
+                opacity:1;
+                filter:blur(0px);
+            }
+            30%{
+                transform:translate(-50%,30px) scale(1.05);
+                opacity:0.8;
+                filter:blur(0px);
+            }
+            70%{
+                transform:translate(-50%,-20px) scale(0.95);
+                opacity:0.4;
+                filter:blur(2px);
+            }
+            100%{
+                transform:translate(-50%,-100px) scale(0.8);
+                opacity:0;
+                filter:blur(5px);
+            }
+        }
+        .author{
+            color:#bbb;font-style:italic;font-size:1rem;margin-top:8px;
+            text-shadow:1px 1px 3px rgba(0,0,0,.6);
+        }
+        .words{
+            margin-top:8px;font-weight:700;font-size:2rem;color:#4fc3f7;
+            text-shadow:2px 2px 8px rgba(0,0,0,.7);
+            filter:drop-shadow(0 0 12px rgba(79,195,247,.5));
+            line-height:1.2;
+        }
+    </style>
+</head>
+<body>
+<div id="niuss-box"></div>
+
+<script>
+    /* ---------------- konfiguracja WS ---------------- */
+    const host =
+        location.protocol.startsWith('http') && location.host
+            ? location.host                   // gdy ładowane przez http/https
+            : 'localhost:3000';               // fallback dla file://
+
+    const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    const socket     = new WebSocket(`${wsProtocol}://${host}`);
+
+    /* ---------------- debug ---------------- */
+    socket.addEventListener('open', () => console.log('[Niuss] WS open ->', host));
+    socket.addEventListener('error', (e) => console.warn('[Niuss] WS error', e));
+
+    /* ---------------- stan widgetu ---------------- */
+    const box   = document.getElementById('niuss-box');
+    const queue = [];
+    let   busy  = false;
+
+    /* ---------------- odbiór wiadomości z serwera ---------------- */
+    socket.addEventListener('message', (e) => {
+        try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'unikalniuss' && Array.isArray(msg.data)) {
+                console.log('[Niuss] odebrano', msg);          // 🚩 debug
+                queue.push({ author: msg.author, data: msg.data });
+                renderNext();
+            }
+        } catch (err) {
+            console.warn('[Niuss] bad payload', err);
+        }
+    });
+
+    /* ---------------- wyświetlanie ---------------- */
+    function renderNext() {
+        if (busy || !queue.length) return;
+        const { author, data } = queue.shift();
+        busy = true;
+
+        const amount   = data.length;
+        const comboTxt = `COMBO ×${amount}!`;
+        const comboCls = amount >= 5 ? 'combo combo-rainbow' : 'combo';
+
+        // Zawsze resetuj klasy przed nowym pokazaniem
+        box.classList.remove('show', 'hide');
+        box.innerHTML = `
+    <div class="words">${data.join(', ')}</div>
+    <div class="author">${author} zdobył +${amount} niussów</div>
+    ${amount > 1 ? `<div class="${comboCls}">${comboTxt}</div>` : ''}
+  `;
+
+        // Małe opóźnienie żeby reset się zastosował, potem pokaż
+        setTimeout(() => {
+            box.classList.add('show');
+        }, 50);
+
+        const display = 2000 + amount * 1000;
+        setTimeout(() => {
+            box.classList.remove('show');
+            box.classList.add('hide');
+
+            setTimeout(() => {
+                box.classList.remove('hide');
+                box.innerHTML = '';
+                busy = false;
+                renderNext();
+            }, 800);           // czas trwania animacji fadeOut
+        }, display);
+    }
+
+    /* ---------------- funkcja testowa ---------------- */
+    // Przykładowe niusse do testowania
+    const niussWords = [
+        'niuss', 'przyniuss', 'meganiuss', 'ultraniuss', 'superniuss',
+        'giganiuss', 'macroniuss', 'niussington', 'niussiarz', 'niussowy',
+        'niussiasty', 'niussmajster', 'niussownik', 'niussologia', 'niusser'
+    ];
+
+    // Globalna funkcja testowa
+    window.niussTest = function(liczba = 1) {
+        if (typeof liczba !== 'number' || liczba < 1 || liczba > 50) {
+            console.warn('[niussTest] Podaj liczbę od 1 do 50');
+            return;
+        }
+
+        // Losuj unikalne niusse
+        const shuffled = [...niussWords].sort(() => 0.5 - Math.random());
+        const selectedNiusse = shuffled.slice(0, Math.min(liczba, niussWords.length));
+
+        // Symuluj otrzymanie wiadomości
+        const testMessage = {
+            type: 'unikalniuss',
+            author: 'TestUser',
+            data: selectedNiusse
+        };
+
+        console.log(`[niussTest] Symuluje ${liczba} niussów:`, selectedNiusse);
+
+        // Dodaj do kolejki tak jak prawdziwa wiadomość
+        queue.push({ author: testMessage.author, data: testMessage.data });
+        renderNext();
+    };
+</script>
+</body>
+</html>

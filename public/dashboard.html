@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard – Sekretarniuss</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/ui/css/base.css" />
+    <link rel="stylesheet" href="/ui/css/layout.css" />
+    <link rel="stylesheet" href="/ui/css/components.css" />
+    <link rel="stylesheet" href="/ui/css/pages/dashboard.css" />
+</head>
+<body class="dark-mode">
+<div class="container">
+    <h1 class="fade-in">🎛️ Panel sterowania – Sekretarniuss</h1>
+
+    <!-- BLOK TWITCH -->
+    <section class="block purple">
+        <h2><i class="fab fa-twitch"></i> Twitch</h2>
+        <p>Status: <span id="twitch-status" class="status">Ładowanie…</span></p>
+
+        <div class="log-section">
+            <h3><i class="fas fa-trophy"></i> Ranking aktywności</h3>
+            <p>Najaktywniejsi widzowie czatu według systemu punktów.</p>
+            <a class="button" href="/lists/ranking.html"><i class="fas fa-list-ol"></i> Zobacz ranking</a>
+        </div>
+
+        <div class="log-section">
+            <h3><i class="fas fa-dna"></i> Unikalniussy</h3>
+            <div class="chat-messages" id="unique-log">–</div>
+            <a class="button" href="/lists/unikalniussy.html"><i class="fas fa-eye"></i> Zobacz wszystkie</a>
+        </div>
+    </section>
+</div>
+
+<script type="module">
+    import { escapeHTML } from '/ui/js/utils.js';
+
+    async function updateDashboard(){
+        const r=await fetch('/api/status');const d=await r.json();
+        const s=document.getElementById('twitch-status');
+        s.textContent=d.twitch.connected?'Połączony':'Rozłączony';
+        s.className=`status ${d.twitch.connected?'online':'offline'}`;
+    }
+    async function updateLogs(){
+        const r=await fetch('/api/logs');const d=await r.json();
+        const ul=document.getElementById('unique-log');
+        ul.innerHTML=d.uniqueLog.split('\n').filter(Boolean)
+            .map(l=>`<div><i class="fas fa-dna"></i> ${escapeHTML(l)}</div>`).join('');
+    }
+    setInterval(updateDashboard,8000);
+    setInterval(updateLogs,10000);
+    updateDashboard();updateLogs();
+</script>
+</body>
+</html>

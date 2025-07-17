@@ -1,0 +1,66 @@
+{
+  "name": "sekretarniuss",
+  "version": "1.0.0",
+  "description": "System zarządzania muzyką i czatem do streama",
+  "type": "commonjs",
+  "main": "src/index.js",
+
+  "bin": {
+    "sekretarniuss": "src/index.js"
+  },
+
+  "scripts": {
+    "start":   "node src/index.js",
+    "dev":     "nodemon src/index.js",
+    "lint":    "eslint .",
+    "format":  "prettier --write .",
+    "pkg":     "pkg ."
+  },
+
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.19.2",
+    "node-schedule": "^2.1.1",
+    "open": "^10.1.0",
+    "spotify-web-api-node": "^5.0.2",
+    "tmi.js": "^1.8.5",
+    "ws": "^8.18.1",
+    "better-sqlite3": "^8.4.0"
+  },
+
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
+    "pkg": "^5.8.0"
+  },
+
+  "engines": {
+    "node": ">=18"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-github/sekretarniuss.git"
+  },
+
+  "license": "MIT",
+
+  "pkg": {
+    "assets": [
+      "public/**/*",
+      "public/widgets/**/*",
+      "storage/**/*",
+      "src/.env",
+      "src/server/routes/**/*",
+      "better_sqlite3.node"
+    ],
+    "targets": [
+      "node18-win"
+    ],
+    "outputPath": "dist"
+  }
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Unikalniussy – Sekretarniuss</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            margin: 0;
+            background: transparent;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 24px auto;
+            padding: 28px;
+            border-radius: 20px;
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            animation: fadeIn 0.4s ease-out both;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            margin-bottom: 16px;
+            text-shadow:
+                    0 0 3px rgba(255, 255, 255, 0.25),
+                    0 0 6px rgba(0, 0, 0, 0.35);
+        }
+
+        .toolbar {
+            margin-bottom: 24px;
+        }
+
+        input.input {
+            padding: 10px 16px;
+            border-radius: 28px;
+            background: #2c2c2c;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: monospace;
+            background: none;
+            color: #e0e0e0;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        th, td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        #pagination {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        #pagination button {
+            background: #2e2e2e;
+            color: #eee;
+            border: none;
+            padding: 9px 16px;
+            margin: 0 4px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+
+        #pagination button:hover:not(:disabled) {
+            background: #3b3b3b;
+        }
+
+        #pagination button:disabled {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        #pagination button.active {
+            background: #1db954;
+            color: #000;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 12px 20px;
+            font-weight: bold;
+            background: #1db954;
+            color: #000;
+            border-radius: 28px;
+            text-decoration: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-out both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            td {
+                padding: 12px;
+                border: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: block;
+                margin-bottom: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="fade-in">🧬 Unikalniussy</h1>
+
+    <div class="toolbar fade-in">
+        <input id="search" class="input" type="text" placeholder="🔍 Szukaj…" />
+    </div>
+
+    <table class="fade-in">
+        <thead>
+        <tr>
+            <th>Nick</th>
+            <th>Data i godzina</th>
+            <th>Wiadomość</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        <tr><td colspan="3">Ładowanie…</td></tr>
+        </tbody>
+    </table>
+
+    <div id="pagination"></div>
+
+    <a class="button" href="/dashboard.html">← Powrót do dashboardu</a>
+</div>
+
+<script type="module">
+    import { renderLogTable } from '/ui/js/logsViewer.js';
+    renderLogTable('/api/logs?full=true', {
+        container: 'table-body',
+        searchInput: '#search',
+        columns: ['nick', 'datetime', 'message'],
+        pageSize: 24
+    });
+</script>
+</body>
+</html>

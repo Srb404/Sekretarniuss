@@ -1,0 +1,38 @@
+/* ---------- IMPORTY ZEWNĘTRZNE ---------- */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+/* ---------- ZMIENNE KOLORÓW ---------- */
+:root {
+    --bg-main:        #121212;
+    --bg-card:        #1d1d1d;
+    --text-main:      #e8e8e8;
+    --text-muted:     #a0a0a0;
+    --accent-green:   #1db954;
+    --accent-purple:  #9146ff;
+    --accent-red:     #ff4d4d;
+    --border-dark:    #333;
+}
+
+/* ---------- RESET / PODSTAWY ---------- */
+* { box-sizing: border-box; }
+
+html,body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- TYPO ---------- */
+h1,h2,h3,h4 { margin: 0 0 .6em; font-weight: 600; color: #fff; }
+p          { margin: 0 0 1em;   color: var(--text-muted); }
+
+/* ---------- ANIMACJE UŻYWANE GLOBALNIE ---------- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn .35s ease-out both; }

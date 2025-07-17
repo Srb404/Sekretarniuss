@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>OBS Microphone Level Visualizer</title>
+
+    <!-- Preconnect for faster font loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Font Awesome for microphone icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Widget styles -->
+    <link rel="stylesheet" href="mic_widget.css">
+
+    <!-- Meta tags for OBS Browser Source -->
+    <meta name="description" content="Real-time microphone level visualization for OBS Studio">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<!-- Main widget container -->
+<main class="mic-widget" role="main">
+    <div class="mic-container">
+        <!-- Microphone icon with visual effects -->
+        <div class="mic-wrapper">
+            <!-- Glow effect layers -->
+            <div class="glow-layer glow-outer"></div>
+            <div class="glow-layer glow-middle"></div>
+            <div class="glow-layer glow-inner"></div>
+
+            <!-- Pulse rings -->
+            <div class="pulse-ring pulse-1"></div>
+            <div class="pulse-ring pulse-2"></div>
+            <div class="pulse-ring pulse-3"></div>
+
+            <!-- Main icon -->
+            <i class="fas fa-microphone mic-icon" aria-hidden="true"></i>
+
+            <!-- Particle effects container -->
+            <div class="particles-container"></div>
+        </div>
+
+        <!-- Level meter with enhanced visuals -->
+        <div class="level-meter" role="progressbar"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="0"
+             aria-label="Poziom głośności mikrofonu">
+            <div class="level-bar">
+                <div class="level-fill">
+                    <div class="level-shimmer"></div>
+                </div>
+                <div class="level-glow"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Widget script -->
+<script src="mic_widget.js"></script>
+</body>
+</html>

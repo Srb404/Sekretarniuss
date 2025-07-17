@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ranking aktywności – Sekretarniuss</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/ui/css/base.css" />
+    <link rel="stylesheet" href="/ui/css/layout.css" />
+    <link rel="stylesheet" href="/ui/css/components.css" />
+    <link rel="stylesheet" href="/ui/css/pages/logs.css" />
+</head>
+<body class="dark-mode">
+<div class="container">
+    <h1 class="fade-in">🏆 Ranking aktywności czatu</h1>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar fade-in">
+        <select id="scope" class="button">
+            <option value="global">Globalny</option>
+            <option value="month">Bieżący miesiąc</option>
+            <option value="day">Dzisiaj</option>
+        </select>
+
+        <input id="ap-user" class="input"  type="text"    placeholder="Nick…" />
+        <input id="ap-pts"  class="input"  type="number" placeholder="Punkty…" style="width:140px" />
+        <button id="ap-add" class="button green">➕ Przyznaj punkty</button>
+
+        <input id="search"  class="input"  type="text" placeholder="🔍 Szukaj…" style="flex:1 1 280px"/>
+    </div>
+
+    <!-- TABELA -->
+    <table class="fade-in">
+        <thead>
+        <tr>
+            <th data-key="place">#</th>
+            <th data-key="user">Użytkownik</th>
+            <th data-key="points">Punkty</th>
+            <th data-key="lastSeen">Ostatnia aktywność</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        <tr><td colspan="4">Ładowanie…</td></tr>
+        </tbody>
+    </table>
+    <div id="pagination"></div>
+
+    <a class="button" href="/dashboard.html">← Powrót do dashboardu</a>
+</div>
+
+<script type="module">
+    import { renderRankingTable } from '/ui/js/logsViewer.js';
+
+    const tbody     = 'table-body';
+    const searchBox = '#search';
+    const scopeSel  = document.getElementById('scope');
+    const userInp   = document.getElementById('ap-user');
+    const ptsInp    = document.getElementById('ap-pts');
+
+    function load(scope = 'global') {
+        const url = `/api/topchat?scope=${scope}&all=true`;
+        renderRankingTable(url, { container: tbody, searchInput: searchBox });
+    }
+
+    /* przyznawanie punktów */
+    document.getElementById('ap-add').addEventListener('click', () => {
+        const user  = userInp.value.trim();
+        const pts   = Number(ptsInp.value);
+        const scope = scopeSel.value;
+        if (!user || isNaN(pts) || pts <= 0) return alert('Podaj nick i dodatnią liczbę punktów.');
+        fetch('/api/points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user, points: pts, scope }),
+        }).then(() => {
+            userInp.value = ''; ptsInp.value = ''; load(scope);
+        });
+    });
+
+    scopeSel.addEventListener('change', () => load(scopeSel.value));
+    load();   // start (global)
+</script>
+</body>
+</html>

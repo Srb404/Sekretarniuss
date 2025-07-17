@@ -1,0 +1,196 @@
+/* ***************************************************************** */
+/*  PRZYCISKI, SELECTY, INPUTY – jeden wygląd                        */
+/* ***************************************************************** */
+a.button, button.button, select.button, input.input {
+    --bg: #2b2b2b;
+    display: inline-flex;
+    align-items: center;
+    gap: .55em;
+    padding: .75em 1.6em;
+    border-radius: 28px;
+    font-size: 1.06em;
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--bg);
+    color: #fff;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background .25s, transform .25s;
+    margin: .35em .35em;
+}
+a.button:hover,
+button.button:hover,
+select.button:hover,
+input.input:hover {
+    background: #3a3a3a;
+}
+a.button:active,
+button.button:active {
+    transform: translateY(1px);
+}
+.button.green  { --bg: var(--accent-green); color:#000; }
+.button.purple { --bg: var(--accent-purple); }
+select.button  { appearance:none; padding-right: 2.8em; position:relative; }
+select.button::after{
+    content: '\f107';                 /* FontAwesome chevron */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position:absolute;
+    right:1.2em; top:50%; transform:translateY(-50%);
+    pointer-events:none;
+}
+input.input { cursor:text; width:260px; }
+
+/*  toolbar: elastyczny pasek filtrów / akcji  */
+.toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:center;
+    margin-bottom:32px;
+}
+
+/* ***************************************************************** */
+/*  KARTY / BLOKI                                                    */
+/* ***************************************************************** */
+.block {
+    background: var(--bg-card);
+    padding: 28px;
+    border-radius: 15px;
+    border: 1px solid var(--border-dark);
+    margin-top: 38px;                 /* 👉 większe odstępy między blokami */
+    animation: fadeIn .4s ease-out both;
+    position: relative;
+}
+.block.purple { border-color: var(--accent-purple); }
+.block.green  { border-color: var(--accent-green ); }
+
+/*  Dekoracyjna poświata w rogu; nie blokuje kliknięć  */
+.block::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left,
+    hsla(268,79%,63%,.14) 0%, transparent 65%);
+    opacity: 0;
+    transition: opacity .4s;
+    pointer-events: none;             /* 👉 NIE przechwytuje myszy */
+}
+.block:hover::after { opacity: 1; }
+
+/* ***************************************************************** */
+/*  STATUS (ONLINE / OFFLINE)                                        */
+/* ***************************************************************** */
+.status { font-weight: 700; }
+.status.online  { color: var(--accent-green); }
+.status.offline { color: var(--accent-red);  }
+
+@keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%     { opacity: .55; }
+}
+.status.online::before,
+.status.offline::before {
+    content: '';
+    display:inline-block;
+    width:.75em;height:.75em;
+    border-radius:50%;
+    margin-right:.35em;
+    background:currentColor;
+    animation:pulse 1s infinite both;
+}
+
+/* ***************************************************************** */
+/*  LOG-SEKCJA (dashboard)                                           */
+/* ***************************************************************** */
+.log-section{
+    margin-top: 28px;
+    padding: 18px;
+    background: rgba(255,255,255,.035);
+    border-radius: 12px;
+    border: 1px solid var(--border-dark);
+    transition: background .25s;
+}
+.log-section:hover{ background: rgba(255,255,255,.055); }
+.log-section h3{ margin: 0 0 10px; }
+
+/* ***************************************************************** */
+/*  CHAT PREVIEW (dashboard)                                         */
+/* ***************************************************************** */
+.chat-messages{
+    background:#202020;
+    border:1px solid var(--border-dark);
+    padding:14px;
+    border-radius:8px;
+    font-family:monospace;
+    font-size:.9em;
+    max-height:260px;
+    overflow-y:auto;
+    white-space:pre-wrap;
+    color:#c8c8c8;
+}
+
+/* ***************************************************************** */
+/*  TABELA + PAGINACJA                                               */
+/* ***************************************************************** */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin:26px 0;
+    font-family:monospace;
+    background:#191919;
+    color:var(--text-main);
+}
+th,td{padding:14px 16px;border-bottom:1px solid var(--border-dark);}
+th{background:#232323;text-align:left;cursor:pointer;}
+tr:hover{background:#1f1f1f;}
+th:hover{background:#303030;}
+
+@media (max-width:600px){
+    table,thead,tbody,th,td,tr{display:block;}
+    td{padding:12px;border:none;border-bottom:1px solid #333;}
+    td::before{content:attr(data-label);font-weight:700;display:block;margin-bottom:6px;}
+}
+
+#pagination{
+    text-align:center;
+    margin: 30px 0;
+}
+#pagination button{
+    background:#2e2e2e;
+    color:#eee;
+    border:none;
+    padding:9px 16px;
+    margin:0 4px;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:background .25s;
+}
+#pagination button:hover:not(:disabled){background:#3b3b3b;}
+#pagination button:disabled{opacity:.45;cursor:default;}
+#pagination button.active{background:var(--accent-green);color:#000;}
+#pagination .dots{opacity:.6;}
+
+/* ***************************************************************** */
+/*  INPUT[type=file] – ukryty, sterowany przyciskiem                  */
+/* ***************************************************************** */
+input[type="file"]{
+    display:none;
+}
+.label-file{
+    display:inline-flex;
+    align-items:center;
+    gap:.55em;
+    padding:.75em 1.6em;
+    border-radius:28px;
+    font-size:1.06em;
+    font-weight:600;
+    background:#2b2b2b;
+    color:#fff;
+    border:2px solid transparent;
+    cursor:pointer;
+    transition:background .25s, transform .25s;
+    margin:.35em .35em;
+}
+.label-file:hover{ background:#3a3a3a; transform:translateY(-2px);}

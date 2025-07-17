@@ -1,0 +1,427 @@
+/* CSS Variables for responsive sizing */
+:root {
+    /* Base size that scales with viewport */
+    --base-size: min(50vw, 50vh);
+
+    /* Sizing based on base */
+    --icon-size: calc(var(--base-size) * 0.6);
+    --bar-width: calc(var(--base-size) * 0.8);
+    --bar-height: calc(var(--base-size) * 0.08);
+    --border-radius: calc(var(--base-size) * 0.04);
+    --glow-size: calc(var(--base-size) * 0.02);
+
+    /* Base colors */
+    --color-bg: rgba(0, 0, 0, 0.8);
+    --color-offline: #4a5568;
+    --color-muted: #718096;
+
+    /* Level colors with vibrant gradients */
+    --color-level1: #10b981;
+    --color-level1-glow: #34d399;
+    --color-level2: #f59e0b;
+    --color-level2-glow: #fbbf24;
+    --color-level3: #ef4444;
+    --color-level3-glow: #f87171;
+    --color-level4: #dc2626;
+    --color-level4-glow: #ff6b6b;
+
+    /* Animation timings */
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main widget - takes up 50% of viewport */
+.mic-widget {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mic-container {
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--base-size) * 0.1);
+}
+
+/* Microphone wrapper for effects */
+.mic-wrapper {
+    position: relative;
+    display: inline-block;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+/* Microphone icon */
+.mic-icon {
+    font-size: var(--icon-size);
+    color: var(--color-offline);
+    transition: all 0.3s var(--ease-smooth);
+    position: relative;
+    z-index: 10;
+    filter: drop-shadow(0 calc(var(--glow-size) * 0.5) var(--glow-size) rgba(0, 0, 0, 0.3));
+    display: block;
+    line-height: 1;
+}
+
+/* Glow layers */
+.glow-layer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.3s var(--ease-smooth);
+    pointer-events: none;
+}
+
+.glow-outer {
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+}
+
+.glow-middle {
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(circle, currentColor 0%, transparent 60%);
+}
+
+.glow-inner {
+    width: 110%;
+    height: 110%;
+    background: radial-gradient(circle, currentColor 0%, transparent 50%);
+}
+
+/* Pulse rings */
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    border: calc(var(--base-size) * 0.01) solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Icon states */
+.mic-icon.offline {
+    color: var(--color-offline);
+    opacity: 0.3;
+    filter: grayscale(1);
+}
+
+.mic-icon.muted {
+    color: var(--color-muted);
+    opacity: 0.5;
+    filter: grayscale(0.8);
+}
+
+/* Level states with enhanced effects */
+.mic-icon.level1 {
+    color: var(--color-level1);
+    filter: drop-shadow(0 0 calc(var(--glow-size) * 2) var(--color-level1-glow));
+    animation: gentle-pulse 2s infinite;
+}
+
+.mic-icon.level1 ~ .glow-inner {
+    color: var(--color-level1-glow);
+    opacity: 0.3;
+}
+
+.mic-icon.level2 {
+    color: var(--color-level2);
+    filter: drop-shadow(0 0 calc(var(--glow-size) * 3) var(--color-level2-glow));
+    animation:
+            gentle-pulse 1.5s infinite,
+            subtle-shake 2s infinite;
+}
+
+.mic-icon.level2 ~ .glow-inner,
+.mic-icon.level2 ~ .glow-middle {
+    color: var(--color-level2-glow);
+    opacity: 0.4;
+}
+
+.mic-icon.level2 ~ .pulse-1 {
+    animation: pulse-expand 2s infinite;
+}
+
+.mic-icon.level3 {
+    color: var(--color-level3);
+    filter: drop-shadow(0 0 calc(var(--glow-size) * 4) var(--color-level3-glow));
+    animation:
+            intense-pulse 1s infinite,
+            vibrate 0.5s infinite;
+}
+
+.mic-icon.level3 ~ .glow-layer {
+    color: var(--color-level3-glow);
+    opacity: 0.5;
+}
+
+.mic-icon.level3 ~ .pulse-1 {
+    animation: pulse-expand 1.5s infinite;
+}
+
+.mic-icon.level3 ~ .pulse-2 {
+    animation: pulse-expand 1.5s 0.5s infinite;
+}
+
+.mic-icon.level4 {
+    color: var(--color-level4);
+    filter:
+            drop-shadow(0 0 calc(var(--glow-size) * 5) var(--color-level4-glow))
+            drop-shadow(0 0 calc(var(--glow-size) * 10) var(--color-level4));
+    animation:
+            critical-shake 0.1s infinite,
+            flame-flicker 0.5s infinite;
+}
+
+.mic-icon.level4 ~ .glow-layer {
+    color: var(--color-level4-glow);
+    animation: glow-pulse 0.3s infinite;
+}
+
+.mic-icon.level4 ~ .glow-outer {
+    opacity: 0.8;
+}
+
+.mic-icon.level4 ~ .glow-middle {
+    opacity: 0.6;
+}
+
+.mic-icon.level4 ~ .glow-inner {
+    opacity: 0.4;
+}
+
+.mic-icon.level4 ~ .pulse-ring {
+    animation: pulse-expand 0.8s infinite;
+}
+
+.mic-icon.level4 ~ .pulse-2 {
+    animation-delay: 0.2s;
+}
+
+.mic-icon.level4 ~ .pulse-3 {
+    animation-delay: 0.4s;
+}
+
+/* Level meter container */
+.level-meter {
+    width: var(--bar-width);
+    position: relative;
+}
+
+/* Level bar */
+.level-bar {
+    width: 100%;
+    height: var(--bar-height);
+    border-radius: var(--border-radius);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+            inset 0 calc(var(--glow-size) * 0.5) var(--glow-size) rgba(0, 0, 0, 0.3),
+            0 calc(var(--glow-size) * 0.5) calc(var(--glow-size) * 2) rgba(0, 0, 0, 0.2);
+}
+
+/* Level fill with gradient */
+.level-fill {
+    height: 100%;
+    width: 0;
+    transition: width 0.15s var(--ease-smooth);
+    background: linear-gradient(
+            90deg,
+            var(--color-level1) 0%,
+            var(--color-level2) 40%,
+            var(--color-level3) 70%,
+            var(--color-level4) 90%
+    );
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect on level bar */
+.level-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            transparent 100%
+    );
+    animation: shimmer 2s infinite;
+}
+
+/* Glow under level bar */
+.level-glow {
+    position: absolute;
+    bottom: calc(var(--glow-size) * -2);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: calc(var(--glow-size) * 4);
+    background: var(--color-level1);
+    filter: blur(calc(var(--glow-size) * 3));
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* Dynamic glow for level bar */
+.mic-widget[data-level="1"] .level-glow {
+    background: var(--color-level1);
+    opacity: 0.3;
+}
+.mic-widget[data-level="2"] .level-glow {
+    background: var(--color-level2);
+    opacity: 0.4;
+}
+.mic-widget[data-level="3"] .level-glow {
+    background: var(--color-level3);
+    opacity: 0.5;
+}
+.mic-widget[data-level="4"] .level-glow {
+    background: var(--color-level4);
+    opacity: 0.7;
+}
+
+/* Animations */
+@keyframes gentle-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes intense-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes subtle-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2%) rotate(-1deg); }
+    75% { transform: translateX(2%) rotate(1deg); }
+}
+
+@keyframes vibrate {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-1%, 1%); }
+    40% { transform: translate(1%, -1%); }
+    60% { transform: translate(-1%, -1%); }
+    80% { transform: translate(1%, 1%); }
+}
+
+@keyframes critical-shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-2%, -2%) rotate(-2deg); }
+    50% { transform: translate(2%, -1%) rotate(2deg); }
+    75% { transform: translate(-1%, 2%) rotate(-1deg); }
+    100% { transform: translate(1%, -2%) rotate(1deg); }
+}
+
+@keyframes flame-flicker {
+    0%, 100% {
+        filter: drop-shadow(0 0 calc(var(--glow-size) * 5) var(--color-level4-glow))
+        drop-shadow(0 0 calc(var(--glow-size) * 10) var(--color-level4));
+    }
+    50% {
+        filter: drop-shadow(0 0 calc(var(--glow-size) * 7) var(--color-level4-glow))
+        drop-shadow(0 0 calc(var(--glow-size) * 15) var(--color-level4))
+        brightness(1.2);
+    }
+}
+
+@keyframes pulse-expand {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* Particle effects styles */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.particle {
+    position: absolute;
+    width: calc(var(--base-size) * 0.02);
+    height: calc(var(--base-size) * 0.02);
+    background: currentColor;
+    border-radius: 50%;
+    animation: particle-rise 2s linear forwards;
+}
+
+@keyframes particle-rise {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), calc(var(--base-size) * -0.4)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
